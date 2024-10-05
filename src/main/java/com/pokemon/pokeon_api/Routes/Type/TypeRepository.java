@@ -1,4 +1,4 @@
-package com.pokemon.pokeon_api.Type;
+package com.pokemon.pokeon_api.Routes.Type;
 
 import java.util.UUID;
 

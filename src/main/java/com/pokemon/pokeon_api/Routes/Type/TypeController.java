@@ -1,7 +1,7 @@
-package com.pokemon.pokeon_api.Type;
+package com.pokemon.pokeon_api.Routes.Type;
 
-import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +11,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pokemon.pokeon_api.Reponses.Type.AllTypesResponse;
+
 @RestController
 @RequestMapping("/type")
 public class TypeController {
 
     @Autowired private TypeService typeService;
+
+    @GetMapping("/set-types")
+    public CompletableFuture<AllTypesResponse> setTypes () {
+        return this.typeService.setTypes();
+    }
 
     @GetMapping("/{id}")
     public Type getTypeById (@PathVariable UUID id) {
@@ -29,7 +36,6 @@ public class TypeController {
 
     @PostMapping()
     public Type saveType ( @RequestBody Type type ) {
-        System.out.println("controller post");
         return this.typeService.saveType( type );
     }
 }
