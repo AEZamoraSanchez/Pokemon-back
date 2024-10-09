@@ -1,6 +1,5 @@
-package com.pokemon.pokeon_api.Pokemon;
+package com.pokemon.pokeon_api.Routes.Type;
 
-import java.util.List;
 import java.util.UUID;
 
 import jakarta.persistence.Entity;
@@ -8,9 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.GenerationType;
 
-
 @Entity
-public class Pokemon {
+public class Type {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -18,17 +16,15 @@ public class Pokemon {
 
     private String name;
 
-    private List<String> types;
+    public UUID getId() {
+        return id;
+    }
 
-    private Long weight;
+    public String getName() {
+        return name;
+    }
 
-    private Long hp;
-
-    private Long attack;
-
-    private Long defense;
-
-    private Long speed;
-
-    private Long height;
+    public void setName(String name) {
+        this.name = name;
+    }
 }
