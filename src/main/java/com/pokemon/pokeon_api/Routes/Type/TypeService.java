@@ -29,21 +29,16 @@ public class TypeService {
     @Autowired
     private TypeRepository typeRepository;
 
-    public Type getTypeById ( UUID id) {
-        return this.typeRepository.findById(id).
-            orElseThrow(() -> new RuntimeException("Type Not Found"));
-
-    }
-
+    
     public CompletableFuture<AllTypesResponse> setTypes() {
-
+        
         return client.sendAsync(request, BodyHandlers.ofString())
-            .thenApply(HttpResponse::body)
-            .thenApply(this::parseResponse)
-            .thenApply(this::saveTypes);
-            
+        .thenApply(HttpResponse::body)
+        .thenApply(this::parseResponse)
+        .thenApply(this::saveTypes);
+        
     }
-
+    
     private AllTypesResponse parseResponse(String responseBody) {
         try {
             return objectMapper.readValue(responseBody, AllTypesResponse.class);
@@ -51,19 +46,25 @@ public class TypeService {
             throw new RuntimeException("Error al parsear la respuesta", e);
         }
     }
-
+    
     private AllTypesResponse saveTypes ( AllTypesResponse response) {
-
+        
         response.getResults().forEach(result -> {
             Type newType = new Type();
             newType.setName(result.getName());
-
+            
             this.typeRepository.save(newType);
         });
-
+        
         return response;
     }
+    
+    public Type getTypeById ( UUID id) {
+        return this.typeRepository.findById(id).
+            orElseThrow(() -> new RuntimeException("Type Not Found"));
 
+    }
+    
     public Iterable<Type> getTypes (){
 
         Iterable<Type> types = typeRepository.findAll();

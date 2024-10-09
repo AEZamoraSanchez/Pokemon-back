@@ -1,12 +1,12 @@
-package com.pokemon.pokeon_api.Reponses.Type;
+package com.pokemon.pokeon_api.Reponses.Pokemon;
 
 import java.util.List;
 
-public class AllTypesResponse {
+public class AllPokemonsResponse {
     private int count;
     private String next;
     private String previous;
-    private List<TypeResponse> results;
+    private List<PokemonResponse> results;
     
     public int getCount() {
         return count;
@@ -26,10 +26,10 @@ public class AllTypesResponse {
     public void setPrevious(String previous) {
         this.previous = previous;
     }
-    public List<TypeResponse> getResults() {
+    public List<PokemonResponse> getResults() {
         return results;
     }
-    public void setResults(List<TypeResponse> results) {
+    public void setResults(List<PokemonResponse> results) {
         this.results = results;
     }
 }
