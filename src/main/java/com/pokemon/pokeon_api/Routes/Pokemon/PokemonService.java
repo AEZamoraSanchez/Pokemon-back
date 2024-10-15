@@ -7,13 +7,17 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pokemon.pokeon_api.Exceptions.NotFoundException;
 import com.pokemon.pokeon_api.Reponses.Pokemon.AllPokemonsResponse;
+import com.pokemon.pokeon_api.Reponses.Pokemon.PokemonUrlResponse;
 
 @Service
 public class PokemonService {
@@ -21,7 +25,7 @@ public class PokemonService {
     HttpClient client = HttpClient.newHttpClient();
 
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create("https://pokeapi.co/api/v2/pokemon?limit=10&offset=0"))
+        .uri(URI.create("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0"))
         .build();
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -52,13 +56,13 @@ public class PokemonService {
 
             .collect(Collectors.toList());
 
-            System.out.println(futures);
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
             .thenApply(v -> response);
     }
 
 
-    private CompletableFuture<Pokemon> getPokemonDetails(String url) {
+    private CompletableFuture<PokemonUrlResponse> getPokemonDetails(String url) {
+
         HttpRequest pokemonRequest = HttpRequest.newBuilder()
             .uri(URI.create(url))
             .build();
@@ -69,25 +73,44 @@ public class PokemonService {
     }
 
 
-    private Pokemon parsePokemon(String responseBody){
+    private PokemonUrlResponse parsePokemon(String responseBody){
         try {
-            return objectMapper.readValue(responseBody, Pokemon.class);
+
+            PokemonUrlResponse pokemon = objectMapper.readValue(responseBody, PokemonUrlResponse.class);
+            return pokemon;
         } catch (Exception e) {
             throw new RuntimeException("Error al parsear la respuesta", e);
         }
     }
 
-    private Pokemon savePokemon( Pokemon pokemon){
+    private Pokemon savePokemon( PokemonUrlResponse pokemon){
 
         Pokemon newPokemon = new Pokemon();
+        String foo[] = {pokemon.getSprites().getBack_default(), pokemon.getSprites().getFront_default() };
+
+        List<String> sprites = Arrays.asList(foo);
+
         newPokemon.setName(pokemon.getName());
         newPokemon.setWeight(pokemon.getWeight());
-        newPokemon.setHp(pokemon.getHp());
-        newPokemon.setAttack(pokemon.getAttack());
-        newPokemon.setDefense(pokemon.getDefense());
-        newPokemon.setSpeed(pokemon.getSpeed());
         newPokemon.setHeight(pokemon.getHeight());
+        newPokemon.setSprites(sprites);
 
+        for ( PokemonUrlResponse.StatInfo statInfo : pokemon.getStats()){
+            switch (statInfo.getStat().getName().toLowerCase()) {
+                case "hp":
+                    newPokemon.setHp((Long) statInfo.getBase_stat());
+                    break;
+                case "attack":
+                    newPokemon.setAttack((Long) statInfo.getBase_stat());
+                    break;
+                case "defense":
+                    newPokemon.setDefense((Long) statInfo.getBase_stat());
+                    break;
+                case "speed":
+                    newPokemon.setSpeed((Long) statInfo.getBase_stat());
+                    break;
+        }
+    }
         return this.pokemonRepository.save(newPokemon);
 
         
@@ -97,7 +120,33 @@ public class PokemonService {
 
         Iterable<Pokemon> pokemons = this.pokemonRepository.findAll();
 
+        // if(pokemons.)
+
         return pokemons;
+    }
+
+    public Pokemon getPokemonById (UUID id ) {
+
+        Pokemon pokemonFound = this.pokemonRepository.findById(id).orElseThrow(() -> new NotFoundException("Pokemon with id: " + id + "not found") );
+
+        return pokemonFound;
+    }
+    
+    public Pokemon createPokemon ( Pokemon pokemon) {
+
+        return this.pokemonRepository.save(pokemon);
+    }
+
+    public String deletePokemon (UUID id) {
+
+
+        Pokemon pokemon = this.pokemonRepository.findById(id).
+            orElseThrow(() -> new NotFoundException("Pokemon to delete not found"));
+
+        this.pokemonRepository.delete(pokemon);
+
+        return "Pokemon:" + pokemon.getName() + "deleted";
+
     }
 
 
