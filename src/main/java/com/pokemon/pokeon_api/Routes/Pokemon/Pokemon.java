@@ -3,9 +3,13 @@ package com.pokemon.pokeon_api.Routes.Pokemon;
 import java.util.List;
 import java.util.UUID;
 
+import com.pokemon.pokeon_api.Routes.Type.Type;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.GenerationType;
 
 
@@ -18,10 +22,9 @@ public class Pokemon {
 
     private String name;
 
-    private List<String> types;
-
+    
     private List<String> sprites;
-
+    
     private Long weight;
     
     private Long hp;
@@ -33,6 +36,10 @@ public class Pokemon {
     private Long speed;
     
     private Long height;
+    
+    @OneToMany(mappedBy = "pokemon", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Type> types;
+
     
     public List<String> getSprites() {
         return sprites;
@@ -55,11 +62,11 @@ public class Pokemon {
     }
 
     public List
-    <String> getTypes() {
+    <Type> getTypes() {
         return types;
     }
 
-    public void setTypes(List<String> types) {
+    public void setTypes(List<Type> types) {
         this.types = types;
     }
 

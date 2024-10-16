@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pokemon.pokeon_api.Exceptions.NotFoundException;
 import com.pokemon.pokeon_api.Reponses.Pokemon.AllPokemonsResponse;
 import com.pokemon.pokeon_api.Reponses.Pokemon.PokemonUrlResponse;
+import com.pokemon.pokeon_api.Routes.Type.Type;
 
 @Service
 public class PokemonService {
@@ -25,7 +27,7 @@ public class PokemonService {
     HttpClient client = HttpClient.newHttpClient();
 
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0"))
+        .uri(URI.create("https://pokeapi.co/api/v2/pokemon?limit=1&offset=0"))
         .build();
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -87,13 +89,26 @@ public class PokemonService {
 
         Pokemon newPokemon = new Pokemon();
         String foo[] = {pokemon.getSprites().getBack_default(), pokemon.getSprites().getFront_default() };
-
+        
+        System.out.println(pokemon);
+        System.out.println(pokemon.getTypes());
         List<String> sprites = Arrays.asList(foo);
+        List<Type> types = new ArrayList<>();
 
+        for (PokemonUrlResponse.TypeSlot typeSlot : (Iterable<PokemonUrlResponse.TypeSlot>) pokemon.getTypes()){
+            Type type = new Type();
+            type.setName(typeSlot.getType().getName());
+            type.setUrl(type.getUrl());
+            types.add(type);
+        }
+        
+        
         newPokemon.setName(pokemon.getName());
         newPokemon.setWeight(pokemon.getWeight());
         newPokemon.setHeight(pokemon.getHeight());
         newPokemon.setSprites(sprites);
+        newPokemon.setTypes(types);
+
 
         for ( PokemonUrlResponse.StatInfo statInfo : pokemon.getStats()){
             switch (statInfo.getStat().getName().toLowerCase()) {
