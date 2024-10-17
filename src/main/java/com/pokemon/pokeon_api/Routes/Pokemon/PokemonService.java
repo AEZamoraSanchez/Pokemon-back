@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pokemon.pokeon_api.Exceptions.NotFoundException;
 import com.pokemon.pokeon_api.Reponses.Pokemon.AllPokemonsResponse;
 import com.pokemon.pokeon_api.Reponses.Pokemon.PokemonUrlResponse;
-import com.pokemon.pokeon_api.Routes.Type.Type;
 
 @Service
 public class PokemonService {
@@ -27,7 +26,7 @@ public class PokemonService {
     HttpClient client = HttpClient.newHttpClient();
 
     HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create("https://pokeapi.co/api/v2/pokemon?limit=1&offset=0"))
+        .uri(URI.create("https://pokeapi.co/api/v2/pokemon?limit=100&offset=0"))
         .build();
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -93,13 +92,10 @@ public class PokemonService {
         System.out.println(pokemon);
         System.out.println(pokemon.getTypes());
         List<String> sprites = Arrays.asList(foo);
-        List<Type> types = new ArrayList<>();
+        List<String> types = new ArrayList<>();
 
         for (PokemonUrlResponse.TypeSlot typeSlot : (Iterable<PokemonUrlResponse.TypeSlot>) pokemon.getTypes()){
-            Type type = new Type();
-            type.setName(typeSlot.getType().getName());
-            type.setUrl(type.getUrl());
-            types.add(type);
+            types.add(typeSlot.getType().getName());
         }
         
         
@@ -135,7 +131,9 @@ public class PokemonService {
 
         Iterable<Pokemon> pokemons = this.pokemonRepository.findAll();
 
-        // if(pokemons.)
+        if(pokemons.iterator().hasNext()){
+            new NotFoundException("There is not Pokemons saved");
+        }
 
         return pokemons;
     }
@@ -150,6 +148,36 @@ public class PokemonService {
     public Pokemon createPokemon ( Pokemon pokemon) {
 
         return this.pokemonRepository.save(pokemon);
+    }
+
+    public Pokemon updatePokemon ( UUID id, Pokemon pokemon){
+        Pokemon pokemonToUpdate = this.pokemonRepository.findById(id).
+            orElseThrow(() -> new NotFoundException("Pokemon to update not found"));
+
+            if (pokemon.getName() != null) {
+                pokemonToUpdate.setName(pokemon.getName());
+            }
+            if (pokemon.getWeight() != null) {
+                pokemonToUpdate.setWeight(pokemon.getWeight());
+            }
+            if (pokemon.getHp() != null) {
+                pokemonToUpdate.setHp(pokemon.getHp());
+            }
+            if (pokemon.getAttack() != null) {
+                pokemonToUpdate.setAttack(pokemon.getAttack());
+            }
+            if (pokemon.getDefense() != null) {
+                pokemonToUpdate.setDefense(pokemon.getDefense());
+            }
+            if (pokemon.getSpeed() != null) {
+                pokemonToUpdate.setSpeed(pokemon.getSpeed());
+            }
+            if (pokemon.getHeight() != null) {
+                pokemonToUpdate.setHeight(pokemon.getHeight());
+            }
+        
+            return this.pokemonRepository.save(pokemonToUpdate);
+
     }
 
     public String deletePokemon (UUID id) {
