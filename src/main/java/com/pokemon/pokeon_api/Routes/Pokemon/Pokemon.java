@@ -3,6 +3,8 @@ package com.pokemon.pokeon_api.Routes.Pokemon;
 import java.util.List;
 import java.util.UUID;
 
+import com.pokemon.pokeon_api.Routes.Type.Type;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -18,19 +20,30 @@ public class Pokemon {
 
     private String name;
 
-    private List<String> types;
-
+    
+    private List<String> sprites;
+    
     private Long weight;
-
+    
     private Long hp;
-
+    
     private Long attack;
-
+    
     private Long defense;
-
+    
     private Long speed;
-
+    
     private Long height;
+    
+    private List<String> types;
+    
+    public List<String> getSprites() {
+        return sprites;
+    }
+
+    public void setSprites(List<String> sprites) {
+        this.sprites = sprites;
+    }
 
     public UUID getId() {
         return id;
@@ -44,7 +57,8 @@ public class Pokemon {
         this.name = name;
     }
 
-    public List<String> getTypes() {
+    public List
+    <String> getTypes() {
         return types;
     }
 
