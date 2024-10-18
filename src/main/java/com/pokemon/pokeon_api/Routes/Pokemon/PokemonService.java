@@ -89,8 +89,6 @@ public class PokemonService {
         Pokemon newPokemon = new Pokemon();
         String foo[] = {pokemon.getSprites().getBack_default(), pokemon.getSprites().getFront_default() };
         
-        System.out.println(pokemon);
-        System.out.println(pokemon.getTypes());
         List<String> sprites = Arrays.asList(foo);
         List<String> types = new ArrayList<>();
 
@@ -131,8 +129,8 @@ public class PokemonService {
 
         Iterable<Pokemon> pokemons = this.pokemonRepository.findAll();
 
-        if(pokemons.iterator().hasNext()){
-            new NotFoundException("There is not Pokemons saved");
+        if(!pokemons.iterator().hasNext()){
+            throw new NotFoundException("There is not Pokemons saved");
         }
 
         return pokemons;
