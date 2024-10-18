@@ -3,11 +3,10 @@ package com.pokemon.pokeon_api.Routes.Pokemon;
 import java.util.List;
 import java.util.UUID;
 
-import com.pokemon.pokeon_api.Routes.Type.Type;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.GenerationType;
 
 
@@ -18,29 +17,38 @@ public class Pokemon {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @NotBlank(message = "Name is mandatory")
     private String name;
-
     
-    private List<String> sprites;
-    
+    // @NotBlank(message = "Weight is mandatory")
     private Long weight;
     
+    // @NotBlank(message = "Hp is mandatory")
     private Long hp;
     
+    // @NotBlank(message = "Attack is mandatory")
     private Long attack;
     
+    // @NotBlank(message = "Defense is mandatory")
     private Long defense;
     
+    // @NotBlank(message = "Speed is mandatory")
     private Long speed;
     
+    // @NotBlank(message = "Height is mandatory")
     private Long height;
     
+    // @NotBlank(message = "Types is mandatory")
     private List<String> types;
     
+    // @NotBlank(message = "Sprites is mandatory")
+    private List<String> sprites;
+
+
     public List<String> getSprites() {
         return sprites;
     }
-
+    
     public void setSprites(List<String> sprites) {
         this.sprites = sprites;
     }

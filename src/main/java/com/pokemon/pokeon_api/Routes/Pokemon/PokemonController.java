@@ -6,6 +6,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.pokemon.pokeon_api.Reponses.Pokemon.AllPokemonsResponse;
 
+import jakarta.validation.Valid;
+
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,7 +48,7 @@ public class PokemonController {
     
 
     @PostMapping()
-    public Pokemon createPokemon(@RequestBody Pokemon pokemon) {
+    public Pokemon createPokemon(@Valid @RequestBody Pokemon pokemon) {
         return this.pokemonService.createPokemon(pokemon);
     }
 

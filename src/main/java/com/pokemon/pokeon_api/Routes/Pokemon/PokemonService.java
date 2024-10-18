@@ -138,7 +138,7 @@ public class PokemonService {
 
     public Pokemon getPokemonById (UUID id ) {
 
-        Pokemon pokemonFound = this.pokemonRepository.findById(id).orElseThrow(() -> new NotFoundException("Pokemon with id: " + id + "not found") );
+        Pokemon pokemonFound = this.pokemonRepository.findById(id).orElseThrow(() -> new NotFoundException("Pokemon with id: " + id + " not found") );
 
         return pokemonFound;
     }
